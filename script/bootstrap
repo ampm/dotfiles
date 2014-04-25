@@ -2,9 +2,12 @@
 #
 # bootstrap installs things.
 
+#获取当前脚本路径:`xxx` xxx的执行结果作为参数
 DOTFILES_ROOT="`pwd`"
 
+#如果命令带非零值返回,立即退出  
 set -e
+
 
 echo ''
 
@@ -62,8 +65,9 @@ install_dotfiles () {
 
   for source in `find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink`
   do
+	#`basename \"${source%.*}\"`:获取文件名不包括扩展名
     dest="$HOME/.`basename \"${source%.*}\"`"
-
+	echo "dest dot name is$dest"
     if [ -f $dest ] || [ -d $dest ]
     then
 
@@ -127,6 +131,8 @@ install_dotfiles
 if [ "$(uname -s)" == "Darwin" ]
 then
   info "installing dependencies"
+  #文件描述符:0 —— stdin （标准输入）。 1 —— stdout （标准输出）。 2 —— stderr （标准错误）
+  #2>&1:将 stderr 转换成 stdout ，使得 stderr 和 stdout 都被重定向到同一个文件(或console)中
   if source bin/dot > /tmp/dotfiles-dot 2>&1
   then
     success "dependencies installed"
